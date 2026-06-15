@@ -17,6 +17,7 @@
         <div class="flag">🇨🇳</div>
         <div class="team-name">中国</div>
         <div class="team-rank">FIFA Ranking: 87</div>
+        <div class="win-badge" v-if="showResult">WIN</div>
       </div>
 
       <div class="vs-badge">
@@ -28,6 +29,7 @@
         <div class="flag">🇧🇷</div>
         <div class="team-name">巴西</div>
         <div class="team-rank">FIFA Ranking: 5</div>
+        <div class="lose-badge" v-if="showResult">LOSE</div>
       </div>
     </div>
 
@@ -37,7 +39,7 @@
         <span class="btn-icon">⚽</span>
         <span class="btn-text">开始AI模拟对战</span>
       </button>
-      <p class="disclaimer">* 本模拟基于AI深度学习，结果绝对真实可靠</p>
+      
     </div>
 
     <!-- 进度条 -->
@@ -60,6 +62,12 @@
         <span>🎯 模拟完成！</span>
       </div>
 
+      <div class="winner-highlight">
+        <span class="winner-flag">🇨🇳</span>
+        <span class="winner-text">中国 WIN!</span>
+        <span class="winner-sub">🏆 战胜巴西 🇧🇷</span>
+      </div>
+
       <div class="math-proof">
         <div class="proof-header">📐 AI推演过程</div>
         <div class="proof-body">
@@ -70,19 +78,17 @@
           </div>
           <div class="proof-line proof-answer">
             <span class="answer-label">答：</span>
-            <span class="answer-content">中国 &gt; 巴西 🎉</span>
+            <span class="answer-content">中国队胜出🎉</span>
           </div>
         </div>
       </div>
 
-      <button class="restart-btn" @click="resetSimulation">
-        🔄 再来一次
-      </button>
+
     </div>
 
     <!-- 底部 -->
     <footer class="footer">
-      <p>⚠️ 本模拟纯属娱乐，如有雷同纯属巧合</p>
+      
     </footer>
   </div>
 </template>
@@ -107,7 +113,8 @@ export default {
       '德国 7:1 库拉索 <span class="proof-tag">已知</span>',
       '德国 7:1 巴西 <span class="proof-tag">已知</span>',
       '库拉索 = 巴西 <span class="proof-tag">等价替换</span>',
-      '中国 2:0 库拉索 <span class="proof-tag">已知</span>'
+      '中国 2:0 库拉索 <span class="proof-tag">已知</span>',
+      '中国 > 巴西 <span class="proof-tag">推导</span>'
     ]
 
     const particleStyle = (i) => {
@@ -271,8 +278,57 @@ body {
 
 .team-win {
   border-color: #ffd700;
-  box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.4), 0 0 60px rgba(255, 215, 0, 0.2);
   transform: scale(1.05);
+  background: rgba(255, 215, 0, 0.08);
+  animation: winGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes winGlow {
+  0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.4), 0 0 60px rgba(255, 215, 0, 0.2); }
+  50% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.6), 0 0 100px rgba(255, 215, 0, 0.3); }
+}
+
+.win-badge {
+  margin-top: 14px;
+  display: inline-block;
+  padding: 6px 28px;
+  font-size: 1.6em;
+  font-weight: 900;
+  color: #0a1628;
+  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  border-radius: 8px;
+  letter-spacing: 6px;
+  animation: winBadgeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards, winBadgePulse 2s ease-in-out 0.6s infinite;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes winBadgeIn {
+  from { opacity: 0; transform: scale(0) rotate(-10deg); }
+  to { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes winBadgePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.lose-badge {
+  margin-top: 14px;
+  display: inline-block;
+  padding: 4px 20px;
+  font-size: 1em;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  letter-spacing: 4px;
+  animation: fadeIn 0.5s ease backwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .team-lose {
@@ -473,11 +529,49 @@ body {
 }
 
 .result-banner {
-  font-size: 2em;
-  font-weight: 900;
+  font-size: 1.3em;
+  font-weight: 700;
   color: #ffd700;
-  margin-bottom: 30px;
+  margin-bottom: 16px;
   animation: bannerPulse 2s ease-in-out infinite;
+}
+
+.winner-highlight {
+  margin-bottom: 24px;
+  padding: 10px 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(29, 185, 84, 0.06));
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 40px;
+  animation: winnerGlow 2s ease-in-out infinite, fadeInUp 0.8s ease;
+}
+
+@keyframes winnerGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.15); }
+  50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.3); }
+}
+
+.winner-flag {
+  font-size: 1.5em;
+  line-height: 1;
+}
+
+.winner-text {
+  font-size: 1.4em;
+  font-weight: 900;
+  background: linear-gradient(to right, #ffd700, #1db954);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: 3px;
+}
+
+.winner-sub {
+  font-size: 0.85em;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 1px;
 }
 
 @keyframes bannerPulse {
